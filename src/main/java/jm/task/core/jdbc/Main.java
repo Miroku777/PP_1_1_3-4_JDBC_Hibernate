@@ -1,23 +1,34 @@
 package jm.task.core.jdbc;
 
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
+import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
         // реализуйте алгоритм здесь
-
         UserService userService = new UserServiceImpl();
-
         userService.createUsersTable();
 
-        userService.saveUser("Name1", "LastName1", (byte) 20);
-        userService.saveUser("Name2", "LastName2", (byte) 25);
-        userService.saveUser("Name3", "LastName3", (byte) 31);
-        userService.saveUser("Name4", "LastName4", (byte) 38);
+        List<User> userList = new ArrayList<>();
 
-        userService.removeUserById(1);
-        userService.getAllUsers();
+        userList.add(new User("John" , "Doe"     , (byte) 25));
+        userList.add(new User("Jane" , "Smith"   , (byte) 30));
+        userList.add(new User("David", "Johnson" , (byte) 35));
+        userList.add(new User("Sarah", "Williams", (byte) 28));
+
+
+
+        userList.forEach(user -> {
+            userService.saveUser(user.getName(), user.getLastName(), user.getAge());
+            System.out.println("User с именем – " + user.getName() + " добавлен в базу данных");
+        });
+
+        userService.getAllUsers().forEach(System.out::println);
         userService.cleanUsersTable();
         userService.dropUsersTable();
     }
