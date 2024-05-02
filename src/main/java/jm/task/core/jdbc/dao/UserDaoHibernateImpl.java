@@ -11,18 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    private static final SessionFactory getSessionFactory;
-    private static Transaction transaction;
-    static {
+    private final SessionFactory sessionFactory;
+    private Transaction transaction;
+
+    public UserDaoHibernateImpl() {
         try {
-            getSessionFactory = Util.getSessionFactory();
+            sessionFactory = Util.getSessionFactory();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public UserDaoHibernateImpl() {
-    }
 
     @Override
     public void createUsersTable() {
@@ -99,7 +98,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void cleanUsersTable() {
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.createNativeQuery("TRUNCATE TABLE users", User.class).executeUpdate();
+            session.createQuery("delete User").executeUpdate();
             transaction.commit();
         } catch (HibernateException e) {
             if (transaction != null) {
